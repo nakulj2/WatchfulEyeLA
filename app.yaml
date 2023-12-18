@@ -1,0 +1,10 @@
+runtime: python38 
+
+instance_class: F1
+
+env_variables:
+  MYSQL_USER: 'root'
+  MYSQL_PASSWORD: '12345'
+  MYSQL_DB: 'cs411database'
+  MYSQL_HOST: '34.31.229.136'
+

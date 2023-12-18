@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchful Eye LA</title>
+    <h1>Watchful Eye LA</h1>
+
+    <style>
+        /* Add some basic styling for the navigation bar */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Style the active link */
+        nav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Change color on hover */
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+
+
+<style>
+    /*STYLING FOR THE FORM */
+    form {
+        max-width: 475px; /* Set a maximum width for the form */
+        margin: auto; /* Center the form horizontally */
+        padding: 20px; /* Add some padding for better spacing */
+        border: 1px solid #ccc; /* Add a border for better visibility */
+        border-radius: 8px; /* Add rounded corners */
+    }
+
+    label {
+        display: block; /* Make labels block-level elements */
+        margin-bottom: 8px; /* Add bottom margin to labels */
+    }
+
+    input {
+        width: 100%; /* Make input fields take up 100% of the container width */
+        padding: 8px; /* Add padding to input fields */
+        margin-bottom: 16px; /* Add bottom margin to input fields */
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+</style>
+
+<style>
+    /*STYLING FOR THE RESULTS*/
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<style>
+    #map {
+        width: 100%;
+        height: 400px;
+    }
+</style>
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+</head>
+<body>
+<nav>
+
+    <a href="{{ url_for('homepage') }}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+    <a href="{{ url_for('report') }}" {% if request.path == '/report' %}class="active"{% endif %}>Report a Crime</a>
+    <a href="{{ url_for('funfacts') }}" {% if request.path == '/funfacts' %}class="active"{% endif %}>Fun Facts</a>
+    <a href="{{ url_for('delete') }}" {% if request.path == '/delete' %}class="active"{% endif %}>Delete a Crime Record</a>
+    <a href="{{ url_for('update') }}" {% if request.path == '/update' %}class="active"{% endif %}>Update a Crime Record</a>
+</nav>
+
+<br></br>
+
+    <form action="/" method="post">
+
+
+        <label for="crime">Crime:</label>
+        <select id="crime" name="crime_code">
+            <option value="">Select a Crime</option>
+            <option value="CRIMINAL HOMICIDE">CRIMINAL HOMICIDE</option>
+            <option value="MANSLAUGHTER, NEGLIGENT">MANSLAUGHTER, NEGLIGENT</option>
+            <option value="RAPE, FORCIBLE">RAPE, FORCIBLE</option>
+            <option value="RAPE, ATTEMPTED">RAPE, ATTEMPTED</option>
+            <option value="ROBBERY">ROBBERY</option>
+            <option value="ATTEMPTED ROBBERY">ATTEMPTED ROBBERY</option>
+            <option value="COUNTERFEIT">COUNTERFEIT</option>
+            <option value="UNAUTHORIZED COMPUTER ACCESS">UNAUTHORIZED COMPUTER ACCESS</option>
+            <option value="BUNCO, GRAND THEFT">BUNCO, GRAND THEFT</option>
+            <option value="BUNCO, PETTY THEFT">BUNCO, PETTY THEFT</option>
+             <option value="BUNCO, ATTEMPT">BUNCO, ATTEMPT</option>
+            <option value="EMBEZZLEMENT, GRAND THEFT ($950.01 & OVER)">EMBEZZLEMENT, GRAND THEFT ($950.01 & OVER)</option>
+            <option value="EMBEZZLEMENT, PETTY THEFT ($950 & UNDER)">EMBEZZLEMENT, PETTY THEFT ($950 & UNDER)</option>
+            <option value="VANDALISM - FELONY ($400 & OVER, ALL CHURCH VANDALISMS)">VANDALISM - FELONY ($400 & OVER, ALL CHURCH VANDALISMS)</option>
+            <option value="VANDALISM - MISDEAMEANOR ($399 OR UNDER)">VANDALISM - MISDEAMEANOR ($399 OR UNDER)</option>
+            <option value="DISCHARGE FIREARMS/SHOTS FIRED">DISCHARGE FIREARMS/SHOTS FIRED</option>
+            <option value="BOMB SCARE">BOMB SCARE</option>
+            <option value="WEAPONS POSSESSION/BOMBING">WEAPONS POSSESSION/BOMBING</option>
+            <option value="LEWD/LASCIVIOUS ACTS WITH CHILD">LEWD/LASCIVIOUS ACTS WITH CHILD</option>
+            <option value="BRANDISH WEAPON">BRANDISH WEAPON</option>
+            <option value="LEWD CONDUCT">LEWD CONDUCT</option>
+            <option value="STALKING">STALKING</option>
+            <option value="PIMPING">PIMPING</option>
+            <option value="PANDERING">PANDERING</option>
+            <option value="SEX,UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ">SEX,UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ</option>
+            <option value="CRM AGNST CHLD (13 OR UNDER) (14-15 & SUSP 10 YRS OLDER)">CRM AGNST CHLD (13 OR UNDER) (14-15 & SUSP 10 YRS OLDER)</option>
+            <option value="CHILD ANNOYING (17YRS & UNDER)">CHILD ANNOYING (17YRS & UNDER)</option>
+            <option value="CHILD PORNOGRAPHY">CHILD PORNOGRAPHY</option>
+            <option value="SEXUAL PENETRATION W/FOREIGN OBJECT">SEXUAL PENETRATION W/FOREIGN OBJECT</option>
+            <option value="ORAL COPULATION">ORAL COPULATION</option>
+            <option value="SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH">SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH</option>
+            <option value="HUMAN TRAFFICKING - COMMERCIAL SEX ACTS">HUMAN TRAFFICKING - COMMERCIAL SEX ACTS</option>
+            <option value="INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)">INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)</option>
+            <option value="BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM">BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM</option>
+            <option value="SEX OFFENDER REGISTRANT OUT OF COMPLIANCE">SEX OFFENDER REGISTRANT OUT OF COMPLIANCE</option>
+            <option value="INDECENT EXPOSURE">INDECENT EXPOSURE</option>
+            <option value="BATTERY WITH SEXUAL CONTACT">BATTERY WITH SEXUAL CONTACT</option>
+            <option value="DRUGS, TO A MINOR">DRUGS, TO A MINOR</option>
+            <option value="CHILD ABANDONMENT">CHILD ABANDONMENT</option>
+            <option value="DISRUPT SCHOOL">DISRUPT SCHOOL</option>
+            <option value="INCITING A RIOT">INCITING A RIOT</option>
+            <option value="FAILURE TO DISPERSE">FAILURE TO DISPERSE</option>
+            <option value="DISTURBING THE PEACE">DISTURBING THE PEACE</option>
+            <option value="TRESPASSING">TRESPASSING</option>
+            <option value="FAILURE TO YIELD">FAILURE TO YIELD</option>
+            <option value="VIOLATION OF COURT ORDER">VIOLATION OF COURT ORDER</option>
+            <option value="VIOLATION OF RESTRAINING ORDER">VIOLATION OF RESTRAINING ORDER</option>
+            <option value="VIOLATION OF TEMPORARY RESTRAINING ORDER">VIOLATION OF TEMPORARY RESTRAINING ORDER</option>
+            <option value="CONTEMPT OF COURT">CONTEMPT OF COURT</option>
+            <option value="FIREARMS EMERGENCY PROTECTIVE ORDER (FIREARMS EPO)">FIREARMS EMERGENCY PROTECTIVE ORDER (FIREARMS EPO)</option>
+            <option value="FIREARMS RESTRAINING ORDER (FIREARMS RO)">FIREARMS RESTRAINING ORDER (FIREARMS RO)</option>
+            <option value="KIDNAPPING">KIDNAPPING</option>
+            <option value="KIDNAPPING - GRAND ATTEMPT">KIDNAPPING - GRAND ATTEMPT</option>
+            <option value="HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE">HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE</option>
+            <option value="CHILD STEALING">CHILD STEALING</option>
+            <option value="TELEPHONE PROPERTY - DAMAGE">TELEPHONE PROPERTY - DAMAGE</option>
+            <option value="THREATENING PHONE CALLS/LETTERS">THREATENING PHONE CALLS/LETTERS</option>
+            <option value="CRIMINAL THREATS - NO WEAPON DISPLAYED">CRIMINAL THREATS - NO WEAPON DISPLAYED</option>
+            <option value="REPLICA FIREARMS(SALE,DISPLAY,MANUFACTURE OR DISTRIBUTE)">REPLICA FIREARMS(SALE,DISPLAY,MANUFACTURE OR DISTRIBUTE)</option>
+            <option value="PEEPING TOM">PEEPING TOM</option>
+            <option value="PROWLER">PROWLER</option>
+            <option value="EXTORTION">EXTORTION</option>
+            <option value="BRIBERY">BRIBERY</option>
+            <option value="CRUELTY TO ANIMALS">CRUELTY TO ANIMALS</option>
+            <option value="CONSPIRACY">CONSPIRACY</option>
+            <option value="OTHER MISCELLANEOUS CRIME">OTHER MISCELLANEOUS CRIME</option>
+            <option value="BIGAMY">BIGAMY</option>
+            <option value="ILLEGAL DUMPING">ILLEGAL DUMPING</option>
+            <option value="DEFRAUDING INNKEEPER/THEFT OF SERVICES, OVER $950.01">DEFRAUDING INNKEEPER/THEFT OF SERVICES, OVER $950.01</option>
+            <option value="DEFRAUDING INNKEEPER/THEFT OF SERVICES, $950 & UNDER">DEFRAUDING INNKEEPER/THEFT OF SERVICES, $950 & UNDER</option>
+            <option value="CONTRIBUTING">CONTRIBUTING</option>
+            <option value="LETTERS, LEWD - TELEPHONE CALLS, LEWD">LETTERS, LEWD - TELEPHONE CALLS, LEWD</option>
+
+        </select>
+
+
+        <br></br>
+
+    <label for="location">Location:</label>
+    <select id="location" name="location">
+    <option value="" disabled selected>Select a Location</option>
+    <option value="Devonshire">Devonshire</option>
+    <option value="Newton">Newton</option>
+    <option value="Southwest">Southwest</option>
+    <option value="N Hollywood">N Hollywood</option>
+    <option value="Central">Central</option>
+    <option value="Wilshire">Wilshire</option>
+    <option value="Mission">Mission</option>
+    <option value="Hollywood">Hollywood</option>
+    <option value="Hollenbeck">Hollenbeck</option>
+    <option value="Pacific">Pacific</option>
+    <option value="Rampart">Rampart</option>
+    <option value="77th Street">77th Street</option>
+    <option value="Harbor">Harbor</option>
+    <option value="Olympic">Olympic</option>
+    <option value="West LA">West LA</option>
+    <option value="Van Nuys">Van Nuys</option>
+    <option value="West Valley">West Valley</option>
+    <option value="Northeast">Northeast</option>
+    <option value="Southeast">Southeast</option>
+    <option value="Foothill">Foothill</option>
+    <option value="Topanga">Topanga</option>
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <br></br>
+
+    <label for="weapon">Weapon:</label>
+        <select id="weapon" name="weapon">
+        <option value="" disabled selected>Select a Weapon</option>
+        <option value="REVOLVER">REVOLVER</option>
+        <option value="HAND GUN">HAND GUN</option>
+        <option value="RIFLE">RIFLE</option>
+        <option value="SHOTGUN">SHOTGUN</option>
+        <option value="SAWED OFF RIFLE/SHOTGUN">SAWED OFF RIFLE/SHOTGUN</option>
+        <option value="UNKNOWN FIREARM">UNKNOWN FIREARM</option>
+        <option value="OTHER FIREARM">OTHER FIREARM</option>
+        <option value="AUTOMATIC WEAPON/SUB-MACHINE GUN">AUTOMATIC WEAPON/SUB-MACHINE GUN</option>
+        <option value="SEMI-AUTOMATIC PISTOL">SEMI-AUTOMATIC PISTOL</option>
+        <option value="SEMI-AUTOMATIC RIFLE">SEMI-AUTOMATIC RIFLE</option>
+        <option value="STARTER PISTOL/REVOLVER">STARTER PISTOL/REVOLVER</option>
+        <option value="TOY GUN">TOY GUN</option>
+        <option value="SIMULATED GUN">SIMULATED GUN</option>
+        <option value="AIR PISTOL/REVOLVER/RIFLE/BB GUN">AIR PISTOL/REVOLVER/RIFLE/BB GUN</option>
+        <option value="ASSAULT WEAPON/UZI/AK47/ETC">ASSAULT WEAPON/UZI/AK47/ETC</option>
+        <option value="ANTIQUE FIREARM">ANTIQUE FIREARM</option>
+        <option value="UNK TYPE SEMIAUTOMATIC ASSAULT RIFLE">UNK TYPE SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="UZI SEMIAUTOMATIC ASSAULT RIFLE">UZI SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="MAC-10 SEMIAUTOMATIC ASSAULT WEAPON">MAC-10 SEMIAUTOMATIC ASSAULT WEAPON</option>
+        <option value="MAC-11 SEMIAUTOMATIC ASSAULT WEAPON">MAC-11 SEMIAUTOMATIC ASSAULT WEAPON</option>
+        <option value="HECKLER & KOCH 91 SEMIAUTOMATIC ASSAULT RIFLE">HECKLER & KOCH 91 SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="HECKLER & KOCH 93 SEMIAUTOMATIC ASSAULT RIFLE">HECKLER & KOCH 93 SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="M1-1 SEMIAUTOMATIC ASSAULT RIFLE">M1-1 SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="M-14 SEMIAUTOMATIC ASSAULT RIFLE">M-14 SEMIAUTOMATIC ASSAULT RIFLE</option>
+        <option value="RELIC FIREARM">RELIC FIREARM</option>
+        <option value="KNIFE WITH BLADE 6INCHES OR LESS">KNIFE WITH BLADE 6INCHES OR LESS</option>
+        <option value="KNIFE WITH BLADE OVER 6 INCHES IN LENGTH">KNIFE WITH BLADE OVER 6 INCHES IN LENGTH</option>
+        <option value="BOWIE KNIFE">BOWIE KNIFE</option>
+        <option value="DIRK/DAGGER">DIRK/DAGGER</option>
+        <option value="FOLDING KNIFE">FOLDING KNIFE</option>
+        <option value="KITCHEN KNIFE">KITCHEN KNIFE</option>
+        <option value="SWITCH BLADE">SWITCH BLADE</option>
+        <option value="OTHER KNIFE">OTHER KNIFE</option>
+        <option value="RAZOR">RAZOR</option>
+        <option value="STRAIGHT RAZOR">STRAIGHT RAZOR</option>
+        <option value="RAZOR BLADE">RAZOR BLADE</option>
+        <option value="AXE">AXE</option>
+        <option value="BOTTLE">BOTTLE</option>
+<option value="CLEAVER">CLEAVER</option>
+<option value="ICE PICK">ICE PICK</option>
+<option value="MACHETE">MACHETE</option>
+<option value="SCISSORS">SCISSORS</option>
+<option value="SWORD">SWORD</option>
+<option value="OTHER CUTTING INSTRUMENT">OTHER CUTTING INSTRUMENT</option>
+<option value="SCREWDRIVER">SCREWDRIVER</option>
+<option value="SYRINGE">SYRINGE</option>
+<option value="GLASS">GLASS</option>
+<option value="UNKNOWN TYPE CUTTING INSTRUMENT">UNKNOWN TYPE CUTTING INSTRUMENT</option>
+<option value="BLACKJACK">BLACKJACK</option>
+<option value="BELT FLAILING INSTRUMENT/CHAIN">BELT FLAILING INSTRUMENT/CHAIN</option>
+<option value="BLUNT INSTRUMENT">BLUNT INSTRUMENT</option>
+<option value="BRASS KNUCKLES">BRASS KNUCKLES</option>
+<option value="CLUB/BAT">CLUB/BAT</option>
+<option value="FIXED OBJECT">FIXED OBJECT</option>
+<option value="ROCK/THROWN OBJECT">ROCK/THROWN OBJECT</option>
+<option value="VEHICLE">VEHICLE</option>
+<option value="STICK">STICK</option>
+<option value="BOARD">BOARD</option>
+<option value="CONCRETE BLOCK/BRICK">CONCRETE BLOCK/BRICK</option>
+<option value="HAMMER">HAMMER</option>
+<option value="PIPE/METAL PIPE">PIPE/METAL PIPE</option>
+<option value="STRONG-ARM (HANDS, FIST, FEET OR BODILY FORCE)">STRONG-ARM (HANDS, FIST, FEET OR BODILY FORCE)</option>
+<option value="UNKNOWN WEAPON/OTHER WEAPON">UNKNOWN WEAPON/OTHER WEAPON</option>
+<option value="BOMB THREAT">BOMB THREAT</option>
+<option value="BOW AND ARROW">BOW AND ARROW</option>
+<option value="CAUSTIC CHEMICAL/POISON">CAUSTIC CHEMICAL/POISON</option>
+<option value="DEMAND NOTE">DEMAND NOTE</option>
+<option value="EXPLOSIVE DEVICE">EXPLOSIVE DEVICE</option>
+<option value="FIRE">FIRE</option>
+<option value="LIQUOR/DRUGS">LIQUOR/DRUGS</option>
+<option value="MARTIAL ARTS WEAPONS">MARTIAL ARTS WEAPONS</option>
+<option value="ROPE/LIGATURE">ROPE/LIGATURE</option>
+<option value="SCALDING LIQUID">SCALDING LIQUID</option>
+<option value="VERBAL THREAT">VERBAL THREAT</option>
+<option value="MACE/PEPPER SPRAY">MACE/PEPPER SPRAY</option>
+<option value="STUN GUN">STUN GUN</option>
+<option value="TIRE IRON">TIRE IRON</option>
+<option value="PHYSICAL PRESENCE">PHYSICAL PRESENCE</option>
+<option value="DOG/ANIMAL (SIC ANIMAL ON)">DOG/ANIMAL (SIC ANIMAL ON)</option>
+</select>
+
+
+
+
+<br></br>
+
+
+
+
+
+
+
+
+        <label for="result_count">Results:</label>
+        <select id="result_count" name="result_count">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        </select>
+
+
+        <div style="text-align: center;">
+        <button type="submit">Filter</button>
+        </div>
+
+
+    </form>
+
+    <table>
+        <tr>
+            <th>Crime</th>
+            <th>Location</th>
+            <th>Weapon</th>
+            <th>Victim Age</th>
+            <th>Victim Sex</th>
+            <th>Date</th>
+
+
+
+        </tr>
+        {% for row in results %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] }}</td>
+
+
+
+            </tr>
+        {% endfor %}
+    </table>
+
+{%if coordinates%}
+    <div id="map" style="height: 400px;"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        function initMap() {
+            var map = L.map('map').setView([34.0522, -118.2437], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+
+            var coordinates = [
+                { lat: 34.0522, lng: -118.2437 }, // Example coordinate
+                { lat: 34.0428, lng: -118.1246 }, // Example coordinate
+                { lat: 34.0328, lng: -118.4246 }, // Example coordinate
+                { lat: 34.0428, lng: -118.1246 }, // Example coordinate
+                { lat: 34.0628, lng: -118.3246 }, // Example coordinate
+
+
+
+                // Add more coordinates as needed
+            ];
+    
+            coordinates.forEach(function(coord) {
+                L.marker([coord.lat, coord.lng]).addTo(map);
+            });
+        }
+        window.onload = initMap;
+    
+    
+    </script>
+{% endif %}
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchful Eye LA</title>
+    <h1>Watchful Eye LA</h1>
+
+    <style>
+        /* Add some basic styling for the navigation bar */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Style the active link */
+        nav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Change color on hover */
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+
+
+<style>
+    /*STYLING FOR THE FORM */
+    form {
+        max-width: 400px; /* Set a maximum width for the form */
+        margin: auto; /* Center the form horizontally */
+        padding: 20px; /* Add some padding for better spacing */
+        border: 1px solid #ccc; /* Add a border for better visibility */
+        border-radius: 8px; /* Add rounded corners */
+    }
+
+    label {
+        display: block; /* Make labels block-level elements */
+        margin-bottom: 8px; /* Add bottom margin to labels */
+    }
+
+    input {
+        width: 100%; /* Make input fields take up 100% of the container width */
+        padding: 8px; /* Add padding to input fields */
+        margin-bottom: 16px; /* Add bottom margin to input fields */
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+</style>
+
+<style>
+    /*STYLING FOR THE RESULTS*/
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<style>
+    #map {
+        width: 100%;
+        height: 400px;
+    }
+</style>
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+</head>
+<body>
+<nav>
+
+    <a href="{{ url_for('homepage') }}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+    <a href="{{ url_for('report') }}" {% if request.path == '/report' %}class="active"{% endif %}>Report a Crime</a>
+    <a href="{{ url_for('funfacts') }}" {% if request.path == '/funfacts' %}class="active"{% endif %}>Fun Facts</a>
+    <a href="{{ url_for('delete') }}" {% if request.path == '/delete' %}class="active"{% endif %}>Delete a Crime Record</a>
+    <a href="{{ url_for('update') }}" {% if request.path == '/update' %}class="active"{% endif %}>Update a Crime Record</a>
+</nav>
+
+<br></br>
+
+    <form action="/" method="post">
+        <label for="first_name">Crime:</label>
+        <input type="text" id="crime_code" name="crime_code">
+
+        <br></br>
+
+        <label for="last_name">Location:</label>
+        <input type="text" id="location" name="location">
+
+        <br></br>
+
+        <label for="last_name">Weapon:</label>
+        <input type="text" id="weapon" name="weapon">
+
+        <button type="submit">Filter</button>
+
+
+    </form>
+
+    <table>
+        <tr>
+            <th>Crime</th>
+            <th>Location</th>
+            <th>Weapon</th>
+            <th>Victim Age</th>
+            <th>Victim Sex</th>
+
+        </tr>
+        {% for row in results %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+
+            </tr>
+        {% endfor %}
+    </table>
+
+<div id="map" style="height: 400px;"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    function initMap() {
+        var map = L.map('map').setView([34.0522, -118.2437], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        var coordinates = [
+            { lat: 34.0522, lng: -118.2437 }, 
+        ];
+
+        
+        coordinates.forEach(function(coord) {
+            L.marker([coord.lat, coord.lng]).addTo(map);
+        });
+    }
+    window.onload = initMap;
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
+
+ -->

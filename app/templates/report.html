@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1>Watchful Eye LA</h1>
+    <title>Watchful Eye LA</title>
+    <style>
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="{{ url_for('homepage') }}" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+    <a href="{{ url_for('report') }}" {% if request.path == '/report' %}class="active"{% endif %}>Report a Crime</a>
+    <a href="{{ url_for('funfacts') }}" {% if request.path == '/funfacts' %}class="active"{% endif %}>Fun Facts</a>
+    <a href="{{ url_for('delete') }}" {% if request.path == '/delete' %}class="active"{% endif %}>Delete a Crime Record</a>
+    <a href="{{ url_for('update') }}" {% if request.path == '/update' %}class="active"{% endif %}>Update a Crime Record</a>
+</nav>
+
+<br></br>
+
+    <form style="margin-left: auto;">
+        <div class="form-group">
+            <label for="weapon_code">Weapon</label>
+            <select id="weapon_code" name="weapon_code">
+                <option value=101>101 - REVOLVER</option>
+                <option value=102>102 - HAND GUN</option>
+                <option value=103>103 - RIFLE</option>
+                <option value=104>104 - SHOTGUN</option>
+                <option value=105>105 - SAWED OFF RIFLE/SHOTGUN</option>
+                <option value=106>106 - UNKNOWN FIREARM</option>
+                <option value=107>107 - OTHER FIREARM</option>
+                <option value=108>108 - AUTOMATIC WEAPON/SUB-MACHINE GUN</option>
+                <option value=109>109 - SEMI-AUTOMATIC PISTOL</option>
+                <option value=110>110 - SEMI-AUTOMATIC RIFLE</option>
+                <option value=111>111 - STARTER PISTOL/REVOLVER</option>
+                <option value=112>112 - TOY GUN</option>
+                <option value=113>113 - SIMULATED GUN</option>
+                <option value=114>114 - AIR PISTOL/REVOLVER/RIFLE/BB GUN</option>
+                <option value=115>115 - ASSAULT WEAPON/UZI/AK47/ETC</option>
+                <option value=116>116 - ANTIQUE FIREARM</option>
+                <option value=117>117 - UNK TYPE SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=118>118 - UZI SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=119>119 - MAC-10 SEMIAUTOMATIC ASSAULT WEAPON</option>
+                <option value=120>120 - MAC-11 SEMIAUTOMATIC ASSAULT WEAPON</option>
+                <option value=121>121 - HECKLER & KOCH 91 SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=122>122 - HECKLER & KOCH 93 SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=123>123 - M1-1 SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=124>124 - M-14 SEMIAUTOMATIC ASSAULT RIFLE</option>
+                <option value=125>125 - RELIC FIREARM</option>
+                <option value=200>200 - KNIFE WITH BLADE 6INCHES OR LESS</option>
+                <option value=201>201 - KNIFE WITH BLADE OVER 6 INCHES IN LENGTH</option>
+                <option value=202>202 - BOWIE KNIFE</option>
+                <option value=203>203 - DIRK/DAGGER</option>
+                <option value=204>204 - FOLDING KNIFE</option>
+                <option value=205>205 - KITCHEN KNIFE</option>
+                <option value=206>206 - SWITCH BLADE</option>
+                <option value=207>207 - OTHER KNIFE</option>
+                <option value=208>208 - RAZOR</option>
+                <option value=209>209 - STRAIGHT RAZOR</option>
+                <option value=210>210 - RAZOR BLADE</option>
+                <option value=211>211 - AXE</option>
+                <option value=212>212 - BOTTLE</option>
+                <option value=213>213 - CLEAVER</option>
+                <option value=214>214 - ICE PICK</option>
+                <option value=215>215 - MACHETE</option>
+                <option value=216>216 - SCISSORS</option>
+                <option value=217>217 - SWORD</option>
+                <option value=218>218 - OTHER CUTTING INSTRUMENT</option>
+                <option value=219>219 - SCREWDRIVER</option>
+                <option value=220>220 - SYRINGE</option>
+                <option value=221>221 - GLASS</option>
+                <option value=223>223 - UNKNOWN TYPE CUTTING INSTRUMENT</option>
+                <option value=300>300 - BLACKJACK</option>
+                <option value=301>301 - BELT FLAILING INSTRUMENT/CHAIN</option>
+                <option value=302>302 - BLUNT INSTRUMENT</option>
+                <option value=303>303 - BRASS KNUCKLES</option>
+                <option value=304>304 - CLUB/BAT</option>
+                <option value=305>305 - FIXED OBJECT</option>
+                <option value=306>306 - ROCK/THROWN OBJECT</option>
+                <option value=307>307 - VEHICLE</option>
+                <option value=308>308 - STICK</option>
+                <option value=309>309 - BOARD</option>
+                <option value=310>310 - CONCRETE BLOCK/BRICK</option>
+                <option value=311>311 - HAMMER</option>
+                <option value=312>312 - PIPE/METAL PIPE</option>
+                <option value=400>400 - STRONG-ARM (HANDS, FIST, FEET OR BODILY FORCE)</option>
+                <option value=500>500 - UNKNOWN WEAPON/OTHER WEAPON</option>
+                <option value=501>501 - BOMB THREAT</option>
+                <option value=502>502 - BOW AND ARROW</option>
+                <option value=503>503 - CAUSTIC CHEMICAL/POISON</option>
+                <option value=504>504 - DEMAND NOTE</option>
+                <option value=505>505 - EXPLOXIVE DEVICE</option>
+                <option value=506>506 - FIRE</option>
+                <option value=507>507 - LIQUOR/DRUGS</option>
+                <option value=508>508 - MARTIAL ARTS WEAPONS</option>
+                <option value=509>509 - ROPE/LIGATURE</option>
+                <option value=510>510 - SCALDING LIQUID</option>
+                <option value=511>511 - VERBAL THREAT</option>
+                <option value=512>512 - MACE/PEPPER SPRAY</option>
+                <option value=513>513 - STUN GUN</option>
+                <option value=514>514 - TIRE IRON</option>
+                <option value=515>515 - PHYSICAL PRESENCE</option>
+                <option value=516>516 - DOG/ANIMAL (SIC ANIMAL ON)</option>
+            </select>
+        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <br></br>
+        <div>
+            <label for="date_occurred">Date</label>
+            <input type="text" id="date_occurred" name="date_occurred" aria-describedby="date_format">
+            <small id="date_format" class="form-text text-muted">Enter in MM/DD/YYYY format (for example, 12/25/2023).</small>
+        </div>
+        <br></br>
+        <div>
+            <label for="time_occurred">Time</label>
+            <input type="text" id="time_occurred" name="time_occurred" aria-describedby="time_format">
+            <small id="time_format" class="form-text text-muted">Enter in military time with format HHMM (for example, 17:30 becomes 1730).</small>
+        </div>
+        <br></br>
+        <div>
+            <label for="crime_code">Crime</label>
+            <select id="crime_code" name="crime_code">
+                <option value="110">110 - CRIMINAL HOMICIDE</option>
+                <option value="113">113 - MANSLAUGHTER, NEGLIGENT</option>
+                <option value="121">121 - RAPE, FORCIBLE</option>
+                <option value="122">122 - RAPE, ATTEMPTED</option>
+                <option value="210">210 - ROBBERY</option>
+                <option value="220">220 - ATTEMPTED ROBBERY</option>
+                <option value="230">230 - ASSAULT WITH DEADLY WEAPON, AGGRAVATED ASSAULT</option>
+                <option value="231">231 - ASSAULT WITH DEADLY WEAPON ON POLICE OFFICER</option>
+                <option value="235">235 - CHILD ABUSE (PHYSICAL) - AGGRAVATED ASSAULT</option>
+                <option value="236">236 - INTIMATE PARTNER - AGGRAVATED ASSAULT</option>
+                <option value="237">237 - CHILD NEGLECT (SEE 300 W.I.C.)</option>
+                <option value="250">250 - SHOTS FIRED AT MOVING VEHICLE, TRAIN OR AIRCRAFT</option>
+                <option value="251">251 - SHOTS FIRED AT INHABITED DWELLING</option>
+                <option value="310">310 - BURGLARY</option>
+                <option value="320">320 - BURGLARY, ATTEMPTED</option>
+                <option value="330">330 - BURGLARY FROM VEHICLE</option>
+                <option value="331">331 - THEFT FROM MOTOR VEHICLE - GRAND ($950.01 AND OVER)</option>
+                <option value="341">341 - THEFT-GRAND ($950.01 & OVER)EXCPT,GUNS,FOWL,LIVESTK,PROD</option>
+                <option value="343">343 - SHOPLIFTING-GRAND THEFT ($950.01 & OVER)</option>
+                <option value="345">345 - DISHONEST EMPLOYEE - GRAND THEFT</option>
+                <option value="347">347 - GRAND THEFT / INSURANCE FRAUD</option>
+                <option value="349">349 - GRAND THEFT / AUTO REPAIR</option>
+                <option value="350">350 - THEFT, PERSON</option>
+                <option value="351">351 - PURSE SNATCHING</option>
+                <option value="352">352 - PICKPOCKET</option>
+                <option value="353">353 - DRUNK ROLL</option>
+                <option value="354">354 - THEFT OF IDENTITY</option>
+                <option value="410">410 - BURGLARY FROM VEHICLE, ATTEMPTED</option>
+                <option value="420">420 - THEFT FROM MOTOR VEHICLE - PETTY ($950 & UNDER)</option>
+                <option value="421">421 - THEFT FROM MOTOR VEHICLE - ATTEMPT</option>
+                <option value="432">432 - BLOCKING DOOR INDUCTION CENTER</option>
+                <option value="433">433 - DRIVING WITHOUT OWNER CONSENT (DWOC)</option>
+                <option value="434">434 - FALSE IMPRISONMENT</option>
+                <option value="435">435 - LYNCHING</option>
+                <option value="436">436 - LYNCHING - ATTEMPTED</option>
+                <option value="437">437 - RESISTING ARREST</option>
+                <option value="438">438 - RECKLESS DRIVING</option>
+                <option value="439">439 - FALSE POLICE REPORT</option>
+                <option value="440">440 - THEFT PLAIN - PETTY ($950 & UNDER)</option>
+                <option value="441">441 - THEFT PLAIN - ATTEMPT</option>
+                <option value="442">442 - SHOPLIFTING - PETTY THEFT ($950 & UNDER)</option>
+                <option value="443">443 - SHOPLIFTING - ATTEMPT</option>
+                <option value="444">444 - DISHONEST EMPLOYEE - PETTY THEFT</option>
+                <option value="445">445 - DISHONEST EMPLOYEE ATTEMPTED THEFT</option>
+                <option value="446">446 - PETTY THEFT - AUTO REPAIR</option>
+                <option value="450">450 - THEFT FROM PERSON - ATTEMPT</option>
+                <option value="451">451 - PURSE SNATCHING - ATTEMPT</option>
+                <option value="452">452 - PICKPOCKET, ATTEMPT</option>
+                <option value="470">470 - TILL TAP - GRAND THEFT ($950.01 & OVER)</option>
+                <option value="471">471 - TILL TAP - PETTY ($950 & UNDER)</option>
+                <option value="473">473 - THEFT, COIN MACHINE - GRAND ($950.01 & OVER)</option>
+                <option value="474">474 - THEFT, COIN MACHINE - PETTY ($950 & UNDER)</option>
+                <option value="475">475 - THEFT, COIN MACHINE - ATTEMPT</option>
+                <option value="480">480 - BIKE - STOLEN</option>
+                <option value="485">485 - BIKE - ATTEMPTED STOLEN</option>
+                <option value="487">487 - BOAT - STOLEN</option>
+                <option value="510">510 - VEHICLE - STOLEN</option>
+                <option value="520">520 - VEHICLE - ATTEMPT STOLEN</option>
+                <option value="522">522 - VEHICLE, STOLEN - OTHER (MOTORIZED SCOOTERS, BIKES, ETC)</option>
+                <option value="622">622 - BATTERY ON A FIREFIGHTER</option>
+                <option value="623">623 - BATTERY POLICE (SIMPLE)</option>
+                <option value="624">624 - BATTERY - SIMPLE ASSAULT</option>
+                <option value="625">625 - OTHER ASSAULT</option>
+                <option value="626">626 - INTIMATE PARTNER - SIMPLE ASSAULT</option>
+                <option value="627">627 - CHILD ABUSE (PHYSICAL) - SIMPLE ASSAULT</option>
+                <option value="647">647 - THROWING OBJECT AT MOVING VEHICLE</option>
+                <option value="648">648 - ARSON</option>
+                <option value="649">649 - DOCUMENT FORGERY / STOLEN FELONY</option>
+                <option value="651">651 - DOCUMENT WORTHLESS ($200.01 & OVER)</option>
+                <option value="652">652 - DOCUMENT WORTHLESS ($200 & UNDER)</option>
+                <option value="653">653 - CREDIT CARDS, FRAUD USE ($950.01 & OVER)</option>
+                <option value="654">654 - CREDIT CARDS, FRAUD USE ($950 & UNDER)</option>
+                <option value="660">660 - COUNTERFEIT</option>
+                <option value="661">661 - UNAUTHORIZED COMPUTER ACCESS</option>
+                <option value="662">662 - BUNCO, GRAND THEFT</option>
+                <option value="664">664 - BUNCO, PETTY THEFT</option>
+                <option value="666">666 - BUNCO, ATTEMPT</option>
+                <option value="668">668 - EMBEZZLEMENT, GRAND THEFT ($950.01 & OVER)</option>
+                <option value="670">670 - EMBEZZLEMENT, PETTY THEFT ($950 & UNDER)</option>
+                <option value="740">740 - VANDALISM - FELONY ($400 & OVER, ALL CHURCH VANDALISMS)</option>
+                <option value="745">745 - VANDALISM - MISDEMEANOR ($399 OR UNDER)</option>
+                <option value="753">753 - DISCHARGE FIREARMS/SHOTS FIRED</option>
+                <option value="755">755 - BOMB SCARE</option>
+                <option value="756">756 - WEAPONS POSSESSION/BOMBING</option>
+                <option value="760">760 - LEWD/LASCIVIOUS ACTS WITH CHILD</option>
+                <option value="761">761 - BRANDISH WEAPON</option>
+                <option value="762">762 - LEWD CONDUCT</option>
+                <option value="763">763 - STALKING</option>
+                <option value="805">805 - PIMPING</option>
+                <option value="806">806 - PANDERING</option>
+                <option value="810">810 - SEX, UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ)</option>
+                <option value="812">812 - CRM AGNST CHLD (13 OR UNDER) (14-15 & SUSP 10 YRS OLDER)</option>
+                <option value="813">813 - CHILD ANNOYING (17YRS & UNDER)</option>
+                <option value="814">814 - CHILD PORNOGRAPHY</option>
+                <option value="815">815 - SEXUAL PENETRATION W/FOREIGN OBJECT</option>
+                <option value="820">820 - ORAL COPULATION</option>
+                <option value="821">821 - SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH</option>
+                <option value="822">822 - HUMAN TRAFFICKING - COMMERCIAL SEX ACTS</option>
+                <option value="830">830 - INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)</option>
+                <option value="840">840 - BESTIALITY, CRIME AGAINST NATURE SEXUAL ASSAULT WITH ANIMAL</option>
+                <option value="845">845 - SEX OFFENDER REGISTRANT OUT OF COMPLIANCE</option>
+                <option value="850">850 - INDECENT EXPOSURE</option>
+                <option value="860">860 - BATTERY WITH SEXUAL CONTACT</option>
+                <option value="865">865 - DRUGS, TO A MINOR</option>
+                <option value="870">870 - CHILD ABANDONMENT</option>
+                <option value="880">880 - DISRUPT SCHOOL</option>
+                <option value="882">882 - INCITING A RIOT</option>
+                <option value="884">884 - FAILURE TO DISPERSE</option>
+                <option value="886">886 - DISTURBING THE PEACE</option>
+                <option value="888">888 - TRESPASSING</option>
+                <option value="890">890 - FAILURE TO YIELD</option>
+                <option value="900">900 - VIOLATION OF COURT ORDER</option>
+                <option value="901">901 - VIOLATION OF RESTRAINING ORDER</option>
+                <option value="902">902 - VIOLATION OF TEMPORARY RESTRAINING ORDER</option>
+                <option value="903">903 - CONTEMPT OF COURT</option>
+                <option value="904">904 - FIREARMS EMERGENCY PROTECTIVE ORDER (FIREARMS EPO)</option>
+                <option value="906">906 - FIREARMS RESTRAINING ORDER (FIREARMS RO)</option>
+                <option value="910">910 - KIDNAPPING</option>
+                <option value="920">920 - KIDNAPPING - GRAND ATTEMPT</option>
+                <option value="921">921 - HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE</option>
+                <option value="922">922 - CHILD STEALING</option>
+                <option value="924">924 - TELEPHONE PROPERTY - DAMAGE</option>
+                <option value="928">928 - THREATENING PHONE CALLS/LETTERS</option>
+                <option value="930">930 - CRIMINAL THREATS - NO WEAPON DISPLAYED</option>
+                <option value="931">931 - REPLICA FIREARMS(SALE,DISPLAY,MANUFACTURE OR DISTRIBUTE)</option>
+                <option value="932">932 - PEEPING TOM</option>
+                <option value="933">933 - PROWLER</option>
+                <option value="940">940 - EXTORTION</option>
+                <option value="942">942 - BRIBERY</option>
+                <option value="943">943 - CRUELTY TO ANIMALS</option>
+                <option value="944">944 - CONSPIRACY</option>
+                <option value="946">946 - OTHER MISCELLANEOUS CRIME</option>
+                <option value="948">948 - BIGAMY</option>
+                <option value="949">949 - ILLEGAL DUMPING</option>
+                <option value="950">950 - DEFRAUDING INNKEEPER/THEFT OF SERVICES, OVER $950.01</option>
+                <option value="951">951 - DEFRAUDING INNKEEPER/THEFT OF SERVICES, $950 & UNDER</option>
+                <option value="954">954 - CONTRIBUTING</option>
+                <option value="956">956 - LETTERS, LEWD  -  TELEPHONE CALLS, LEWD</option>
+            </select>
+        </div>
+        <br></br>
+        <div>
+            <label for="time_occurred">Age of Victim</label>
+            <input type="number" id="victim_age" name="victim_age">
+        </div>
+        <br></br>
+        <div>
+            <label for="gender">Victim Gender</label>
+            <select id="gender" name="gender">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="X">Unknown</option>
+            </select>
+        </div>
+        <br></br>
+        <div>
+            <label for="descent">Descent</label>
+            <select id="descent" name="descent">
+                <option values="A">A - Other Asian</option>
+                <option values="B">B - Black C - Chinese</option>
+                <option values="D">D - Cambodian</option>
+                <option values="F">F - Filipino</option>
+                <option values="G">G - Guamanian</option>
+                <option values="H">H - Hispanic/Latin/Mexican</option>
+                <option values="I">I - American Indian/Alaskan Native</option>
+                <option values="J">J - Japanese</option>
+                <option values="K">K - Korean</option>
+                <option values="L">L - Laotian</option>
+                <option values="O">O - Other</option>
+                <option values="P">P - Pacific Islander</option>
+                <option values="S">S - Samoan</option>
+                <option values="U">U - Hawaiian</option>
+                <option values="V">V - Vietnamese</option>
+                <option values="W">W - White</option>
+                <option values="X">X - Unknown</option>
+                <option values="Z">Z - Asian Indian</option>
+            </select>
+        </div>
+        <br></br>
+        <div>
+            <label for="location">Location</label>
+            <select id="location" name="location">
+                <option value="Devonshire">Devonshire</option>
+                <option value="Newton">Newton</option>
+                <option value="Southwest">Southwest</option>
+                <option value="N Hollywood">N Hollywood</option>
+                <option value="Central">Central</option>
+                <option value="Wilshire">Wilshire</option>
+                <option value="Mission">Mission</option>
+                <option value="Hollywood">Hollywood</option>
+                <option value="Hollenbeck">Hollenbeck</option>
+                <option value="Pacific">Pacific</option>
+                <option value="Rampart">Rampart</option>
+                <option value="77th Street">77th Street</option>
+                <option value="Harbor">Harbor</option>
+                <option value="Olympic">Olympic</option>
+                <option value="West LA">West LA</option>
+                <option value="Van Nuys">Van Nuys</option>
+                <option value="West Valley">West Valley</option>
+                <option value="Northeast">Northeast</option>
+                <option value="Southeast">Southeast</option>
+                <option value="Foothill">Foothill</option>
+                <option value="Topanga">Topanga</option>
+            </select>
+        </div>
+        <br></br>
+        <div>
+            <label for="longitude">Longitude of Crime</label>
+            <input type="number" id="longitude" name="longitude">
+        </div>
+        <br></br>
+        <div>
+            <label for="latitude">Latitude of Crime</label>
+            <input type="number" id="latitude" name="latitude">
+        </div>
+        <br></br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</body>
+</html>
+
